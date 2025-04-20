@@ -1,11 +1,25 @@
-import Blog from '../models/blog.js';
+import Blog from '../models/blogModel.js';
+import jwt from 'jsonwebtoken';
 
 // Get all blogs
 export const getBlogs = async (req, res) => {
+    const token = req.cookies.token;
+
+    if (!token) {
+        return res.status(401).json({ message: "Access Denied: No Token Provided" });
+    }
+
     try {
-        const blogs = await Blog.find();
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+
+        const blogs = await Blog.find({ author: userId })
+            .populate("author", "name")
+            .sort({ createdAt: -1 });
+
         res.status(200).json(blogs);
     } catch (error) {
+        console.error("Error fetching user's blogs:", error.message);
         res.status(500).json({ message: "Error fetching blogs", error: error.message });
     }
 };

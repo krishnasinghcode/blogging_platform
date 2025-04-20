@@ -1,5 +1,5 @@
-import Comment from "../models/comment.js";
-import Blog from "../models/blog.js";
+import Comment from "../models/commentModel.js";
+import Blog from "../models/blogModel.js";
 
 /**
  * Create a new comment for a blog post
