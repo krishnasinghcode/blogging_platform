@@ -2,12 +2,14 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import { sendOTPEmail } from "../utils/nodeMailer.js"; // Import email service
+import { generateTokens } from "../utils/tokenUtils.js";
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // Signup Controller
+
 const signup = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
     try {
         const existingUser = await User.findOne({ email });
 
@@ -16,68 +18,60 @@ const signup = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(String(password), 10);
-        const newUser = new User({
-            name,
-            email,
-            password: hashedPassword,
-        });
-
+        const newUser = new User({ username, email, password: hashedPassword });
         const savedUser = await newUser.save();
-        
-        // Generate JWT Token after successful signup
-        const token = jwt.sign(
-            { id: savedUser._id, email: savedUser.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        );
-        
-        // Set token in cookie
-        res.cookie('token', token, {
+
+        const { accessToken, refreshToken } = generateTokens(savedUser._id, savedUser.email);
+
+        res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
-            sameSite: 'strict',
-            maxAge: 3600000 // 1 hour in milliseconds
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
-        res.status(200).json({ message: "Signup successful!" });
+        res.status(200).json({
+            message: "Login successful!",
+            access: accessToken,
+        });
+
     } catch (error) {
         console.error("Signup Error:", error);
         res.status(500).json({ message: "Signup unsuccessful!" });
     }
 };
 
+
 // Login Controller
 const login = async (req, res) => {
     const { email, password } = req.body;
     try {
-        res.clearCookie('token');
-
         const existingUser = await User.findOne({ email });
 
         if (!existingUser) {
-            return res.status(401).json({ message: "User does not exist, please signup!" });
+            return res.status(400).json({ message: "User does not exist, please signup!" });
         }
 
         const isMatch = await bcrypt.compare(String(password), existingUser.password);
 
         if (!isMatch) {
-            return res.status(401).json({ message: "Wrong password!" });
+            return res.status(400).json({ message: "Wrong password!" });
         }
 
-        const token = jwt.sign(
-            { id: existingUser._id, email: existingUser.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "24h" } 
-        );
+        const { accessToken, refreshToken } = generateTokens(existingUser._id, existingUser.email);
 
-        res.cookie('token', token, {
+        res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 24 * 60 * 60 * 1000
+            sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         });
 
-        res.status(200).json({ message: "Login successful!" });
+        res.status(200).json({
+            message: "Login successful!",
+            access: accessToken,
+        });
+
     } catch (error) {
         console.error("Login Error:", error);
         res.status(500).json({ message: "Login unsuccessful!" });
@@ -85,24 +79,21 @@ const login = async (req, res) => {
 };
 
 
-
 // Logout Controller
 const logout = async (req, res) => {
     try {
-        // Clear the token cookie
-        res.cookie('token', '', {
+        res.clearCookie('refreshToken', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            expires: new Date(0) // Immediate expiration
+            sameSite: 'Strict'
         });
-        
         res.status(200).json({ message: "Logout successful!" });
     } catch (error) {
         console.error("Logout Error:", error);
         res.status(500).json({ message: "Logout unsuccessful!" });
     }
 };
+
 
 // Send Verification OTP
 const sendVerificationOTP = async (req, res) => {
@@ -223,6 +214,24 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const refreshAccessToken = (req, res) => {
+    const token = req.cookies.refreshToken;
+    if (!token) return res.status(401).json({ message: "No refresh token" });
+
+    jwt.verify(token, process.env.REFRESH_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: "Invalid refresh token" });
+
+        const newAccessToken = jwt.sign(
+            { id: user.id },
+            process.env.ACCESS_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        res.status(200).json({ accessToken: newAccessToken });
+    });
+};
+
+
 // Export Controllers
 export {
     signup,
@@ -233,4 +242,5 @@ export {
     sendResetOTP,
     verifyResetOTP,
     resetPassword,
+    refreshAccessToken,
 };

@@ -1,70 +1,74 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import InputField from "../components/InputField"; // Adjust path as necessary
-import back from '../assets/back.png'
-import { createBlog } from "../api/blogAPI"; // Import the function
+import InputField from "../components/Input";
+import Button from "../components/Button";
+import back from '../assets/back.png';
+import { createBlog } from "../api/blogAPI";
 
 const CreateBlog = () => {
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        const newBlog = {
-            title,
-            content,
-        };
+    const newBlog = { title, content };
 
-        try {
-            // Call the createBlog function from blogService
-            await createBlog(newBlog);
+    try {
+      await createBlog(newBlog);
+      console.log("Blog created successfully");
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating blog:", error);
+    }
+  };
 
-            console.log("Blog created successfully");
-            navigate("/dashboard"); // Redirect to the dashboard
-        } catch (error) {
-            console.error("Error creating blog:", error);
-        }
-    };
+  const handleBackButton = () => {
+    navigate("/");
+  };
 
-    const handleBackButton = () => {
-        navigate("/dashboard");
-    };
+  return (
+    <div className="min-h-screen bg-base-100 px-4 py-8">
+      <div className="mb-6">
+        <img
+          src={back}
+          alt="Back"
+          className="h-10 ml-36 cursor-pointer"
+          onClick={handleBackButton}
+        />
+      </div>
 
-    return (
-        <div>
-            <div>
-                <img className="ml-36 mt-10 h-[40px]" onClick={handleBackButton} src={back}></img>
-            </div>
-            <div className="max-w-3xl mx-auto mt-12 p-6 bg-white shadow-lg rounded-xl">
-                <h2 className="text-2xl font-bold mb-4">Create a New Blog</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <InputField
-                        type="text"
-                        name="title"
-                        label="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <InputField
-                        type="text"
-                        name="content"
-                        label="Content"
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                    />
-                    <button
-                        type="submit"
-                        className="bg-background text-text px-4 py-2 rounded border-2 hover:border-accent"
-                    >
-                        Create Blog
-                    </button>
-                </form>
-            </div>
-        </div>
-    );
+      <div className="max-w-3xl mx-auto bg-base-200 p-8 rounded-xl shadow-xl border border-base-300">
+        <h2 className="text-3xl font-bold mb-8 text-center text-primary">Create a New Blog</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <InputField
+            type="text"
+            name="title"
+            label="Title"
+            placeholder="Enter blog title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <InputField
+            type="textarea"
+            name="content"
+            label="Content"
+            placeholder="Write your blog content..."
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
+          <Button
+            type="submit"
+            text="Create Blog"
+            variant="primary"
+            className="w-full"
+          />
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default CreateBlog;

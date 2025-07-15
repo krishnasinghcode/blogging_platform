@@ -1,78 +1,71 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signupUser } from "../utils/auth";
-import InputField from "../components/InputField";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import Input from "../components/Input";
 import Button from "../components/Button";
-import AuthFormContainer from "../components/AuthFormContainer";
 
-const Signup = () => {
-    const navigate = useNavigate();
+export default function signup() {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-    });
-
-    const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setErrorMessage("");
-        setSuccessMessage("");
-
-        const result = await signupUser(formData);
-
-        if (result.success) {
-            setSuccessMessage(result.message);
-            setFormData({ name: "", email: "", password: "" });
-
-            setTimeout(() => navigate("/login"), 1500);
-        } else {
-            setErrorMessage(result.message);
-        }
-
-        setLoading(false);
-    };
-
-    return (
-        <div className="flex items-center justify-center h-screen bg-background">
-            <AuthFormContainer title="Signup">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <InputField type="text" name="name" label="Name" value={formData.name} onChange={handleChange} />
-                    <InputField type="email" name="email" label="Email" value={formData.email} onChange={handleChange} />
-                    <InputField type="password" name="password" label="Password" value={formData.password} onChange={handleChange} />
-
-                    <Button type="submit" text={loading ? "Signing up..." : "Signup"} disabled={loading} />
-                </form>
-
-                {/* Redirect to login */}
-                <div className="mt-4 text-center">
-                    <p>
-                        Already have an account?{" "}
-                        <span className="text-accent cursor-pointer" onClick={() => navigate("/login")}>
-                            Login
-                        </span>
-                    </p>
-                </div>
-
-                {/* Feedback Messages */}
-                {errorMessage && <p className="text-red-500 mt-4 text-center">{errorMessage}</p>}
-                {successMessage && <p className="text-green-500 mt-4 text-center">{successMessage}</p>}
-            </AuthFormContainer>
-        </div>
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(`http://localhost:5000/api/auth/signup/`, {
+        username,
+        email,
+        password,
+      },
+      {
+        withCredentials: true
+      }
     );
-};
+      localStorage.setItem("access", res.data.access);
+      navigate("/");
+    } catch (err) {
+      alert("Signup failed");
+    }
+  };
 
-export default Signup;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-base-200">
+      <form
+        onSubmit={handleRegister}
+        className="card w-96 bg-base-100 shadow-xl p-8 space-y-4"
+      >
+        <h2 className="text-2xl font-bold text-center">Register</h2>
+
+        <Input
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+
+        <Input
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <Button className="btn btn-primary w-full" text="signup" type="submit">
+        </Button>
+
+        <p className="text-sm text-center text-neutral-600">
+          Already a user?{" "}
+          <Link to="/login" className="link link-primary">
+            Login
+          </Link>
+        </p>
+      </form>
+    </div>
+  );
+}

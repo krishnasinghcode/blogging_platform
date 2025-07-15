@@ -1,12 +1,14 @@
 import express from 'express';
 import { 
     signup, 
-    login,  
+    login, 
     sendVerificationOTP, 
     verifyOTP, 
     sendResetOTP, 
     verifyResetOTP, 
-    resetPassword 
+    resetPassword,
+    refreshAccessToken,
+    logout
 } from '../controllers/authController.js';
 
 const router = express.Router();
@@ -17,10 +19,10 @@ router.post('/signup', signup);
 // Login Route
 router.post('/login', login);
 
-// Send Email Verification OTP
+// Send Verification OTP
 router.post('/verify', sendVerificationOTP);
 
-// Email Verification OTP check
+// Verify OTP
 router.post('/verify-otp', verifyOTP);
 
 // Send Password Reset OTP
@@ -31,5 +33,11 @@ router.post('/verify-reset-otp', verifyResetOTP);
 
 // Reset Password
 router.post('/reset-password', resetPassword);
+
+// Refresh Access Token
+router.get("/refresh-token", refreshAccessToken);
+
+router.post('/logout', logout);
+
 
 export default router;

@@ -3,15 +3,8 @@ import jwt from 'jsonwebtoken';
 
 // Get all blogs
 export const getBlogs = async (req, res) => {
-    const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({ message: "Access Denied: No Token Provided" });
-    }
-
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const userId = decoded.id;
+        const userId = req.user._id;
 
         const blogs = await Blog.find({ author: userId })
             .populate("author", "name")
@@ -24,10 +17,11 @@ export const getBlogs = async (req, res) => {
     }
 };
 
+
 // Get a single blog by ID
 export const getBlogById = async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.id); // Fixed `req.param.id` to `req.params.id`
+        const blog = await Blog.findById(req.params.id);
 
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
@@ -48,12 +42,11 @@ export const createBlog = async (req, res) => {
             return res.status(400).json({ message: "Title and content are required" });
         }
 
-        // Use `req.user.id` instead of `req.user._id`
         if (!req.user || !req.user.id) {
             return res.status(401).json({ message: "Unauthorized: User not authenticated" });
         }
 
-        const author = req.user.id; // Corrected this line
+        const author = req.user.id;
 
         const newBlog = new Blog({ title, content, author });
         await newBlog.save();

@@ -1,37 +1,39 @@
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import BlogCard from "../components/BlogCard";
 import { fetchAllBlogs } from "../api/blogAPI";
 
 const Dashboard = () => {
-    const [blogs, setBlogs] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const loadBlogs = async () => {
-            const token = localStorage.getItem("token"); // or from context/state
-            try {
-                const data = await fetchAllBlogs(token);
-                setBlogs(data);
-            } catch (err) {
-                console.error("Error fetching blogs:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-    
-        loadBlogs();
-    }, []);
+  useEffect(() => {
+    const loadBlogs = async () => {
+      const token = localStorage.getItem("access");
+      try {
+        const data = await fetchAllBlogs(token);
+        setBlogs(data);
+      } catch (err) {
+        console.error("Error fetching blogs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (loading) return <div className="text-center mt-10">Loading...</div>;
+    loadBlogs();
+  }, []);
 
-    return (
-        <div className="px-4">
-            {blogs.map((blog) => (
-                <BlogCard key={blog._id} blog={blog} />
-            ))}
-        </div>
-    );
+  if (loading) return <div className="text-center mt-10 text-lg">Loading...</div>;
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6 text-primary">All Blogs</h1>
+      {blogs.length > 0 ? (
+        blogs.map((blog) => <BlogCard key={blog._id} blog={blog} />)
+      ) : (
+        <p className="text-center text-gray-500">No blogs available.</p>
+      )}
+    </div>
+  );
 };
 
 export default Dashboard;
