@@ -56,7 +56,7 @@ export default function signup() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Button className="btn btn-primary w-full" text="signup" type="submit">
+        <Button text="signup" type="submit">
         </Button>
 
         <p className="text-sm text-center text-neutral-600">

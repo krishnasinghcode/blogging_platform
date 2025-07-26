@@ -41,3 +41,16 @@ export const createBlog = async (newBlog) => {
     throw error;
   }
 };
+
+export const fetchBlogById = async (_id) => {
+  const token = localStorage.getItem("access");
+
+  const response = await API.get(`/blogs/${_id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    withCredentials: true,
+  });
+
+  return response.data;
+};

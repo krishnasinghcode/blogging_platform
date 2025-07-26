@@ -8,9 +8,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const loadBlogs = async () => {
-      const token = localStorage.getItem("access");
       try {
-        const data = await fetchAllBlogs(token);
+        const data = await fetchAllBlogs();
+        console.log(data) 
         setBlogs(data);
       } catch (err) {
         console.error("Error fetching blogs:", err);

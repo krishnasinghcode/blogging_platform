@@ -1,4 +1,5 @@
 import Blog from '../models/blogModel.js';
+import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 
 // Get all blogs
@@ -21,7 +22,9 @@ export const getBlogs = async (req, res) => {
 // Get a single blog by ID
 export const getBlogById = async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.id);
+        const blog = await Blog.findById(req.params.id)
+            .populate('author', 'name')
+            .populate('comments');
 
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });

@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CreateBlog from './pages/CreateBlog';
-import BlogPage from './pages/BlogPage';
+import BlogPage from './pages/BlogDetail.jsx';
 import { Profile } from './pages/Profile';
 
 const App = () => {
@@ -21,7 +21,7 @@ const App = () => {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/blog:id" element={<BlogPage />} />    
+            <Route path="/blogs/:id" element={<BlogPage />} />    
             <Route path="/Create" element={<CreateBlog />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />

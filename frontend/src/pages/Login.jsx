@@ -50,7 +50,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Button text="Login" variant="primary" onClick={handleLogin}></Button>
+        <Button text="Login" onClick={handleLogin}></Button>
 
         <div className="divider">OR</div>
         <GoogleLoginButton />

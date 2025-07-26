@@ -8,7 +8,7 @@ const Button = ({
   type = 'button',
   disabled = false,
 }) => {
-  const Variant = variant || 'primary';
+  const Variant = variant || 'outline';
 
   return (
     <button
