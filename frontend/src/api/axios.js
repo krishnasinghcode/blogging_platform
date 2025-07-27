@@ -1,13 +1,25 @@
 import axios from "axios";
 
+// Create Axios instance
 const API = axios.create({
   baseURL: "http://localhost:5000/api",
   withCredentials: true,
 });
 
+API.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 API.interceptors.response.use(
-  res => res,
-  async error => {
+  (res) => res,
+  async (error) => {
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -26,8 +38,10 @@ API.interceptors.response.use(
 
         return API(originalRequest);
       } catch (err) {
-        console.error("Token refresh failed:", err);
-        return Promise.reject(error);
+        console.error("🔒 Token refresh failed:", err);
+        localStorage.removeItem("accessToken");
+        window.location.href = "/login";
+        return Promise.reject(err);
       }
     }
 

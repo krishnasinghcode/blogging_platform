@@ -6,7 +6,8 @@ const Input = ({
   value,
   onChange,
   className = '',
-  label = ''
+  label = '',
+  autoComplete = ''
 }) => {
   return (
     <div className="form-control w-full">
@@ -17,6 +18,7 @@ const Input = ({
         value={value}
         onChange={onChange}
         className={`input input-bordered w-full ${className}`}
+        autoComplete={autoComplete}
       />
     </div>
   );

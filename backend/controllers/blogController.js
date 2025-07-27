@@ -8,7 +8,7 @@ export const getBlogs = async (req, res) => {
         const userId = req.user._id;
 
         const blogs = await Blog.find({ author: userId })
-            .populate("author", "name")
+            .populate("author", "username")
             .sort({ createdAt: -1 });
 
         res.status(200).json(blogs);
@@ -23,9 +23,7 @@ export const getBlogs = async (req, res) => {
 export const getBlogById = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id)
-            .populate('author', 'name')
-            .populate('comments');
-
+            .populate('author', 'username')
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
         }

@@ -11,9 +11,9 @@ const LogoutButton = () => {
   }
   const handleLogout = async () => {
     try {
-      await API.post('/auth/logout'); // calls the logout API (clears refresh token cookie)
-      localStorage.removeItem('access'); // clear access token
-      navigate('/login'); // optional: redirect to login
+      await API.post('/auth/logout');
+      localStorage.removeItem('accessToken');
+      navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
     }

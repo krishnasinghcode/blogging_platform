@@ -1,4 +1,0 @@
-make request to create and get all the blogs
-then edit and delete the blogs
-
-form cookie how to get user then the blog.

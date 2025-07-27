@@ -10,27 +10,30 @@ import Footer from './components/Footer';
 import CreateBlog from './pages/CreateBlog';
 import BlogPage from './pages/BlogDetail.jsx';
 import { Profile } from './pages/Profile';
+import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
   return (
     <Router>
       <div className="flex flex-col h-screen">
-        {/* Navbar and Footer can be used globally */}
         <Navbar />
-        
+
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/blogs/:id" element={<BlogPage />} />    
-            <Route path="/Create" element={<CreateBlog />} />
+            {/* ✅ Protected Routes */}
+            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/blogs/:id" element={<PrivateRoute><BlogPage /></PrivateRoute>} />
+            <Route path="/Create" element={<PrivateRoute><CreateBlog /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+
+            {/* ❌ Public Routes */}
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/VerifyEmail" element={<VerifyEmail />} />
             <Route path="/ForgotPassword" element={<ForgotPassword />} />
-            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
-        
+
         <Footer />
       </div>
     </Router>

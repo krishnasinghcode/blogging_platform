@@ -5,7 +5,7 @@ import { getCommentsForBlog, createComment, deleteComment } from "../controllers
 const router = express.Router();
 
 router.get("/:blogId", getCommentsForBlog); // Fetch all comments for a blog
-router.post("/:blogId/create", authenticateUser, createComment); // Create a comment
+router.post("/:blogId", authenticateUser, createComment); // Create a comment
 router.delete("/:commentId", authenticateUser, deleteComment); // Delete a comment
 
 export default router;

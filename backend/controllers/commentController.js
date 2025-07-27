@@ -1,9 +1,11 @@
 import Comment from "../models/commentModel.js";
 import Blog from "../models/blogModel.js";
+import User from "../models/userModel.js"
 
 /**
  * Create a new comment for a blog post
  */
+
 export const createComment = async (req, res) => {
     try {
         const { content } = req.body;
@@ -18,26 +20,44 @@ export const createComment = async (req, res) => {
         }
 
         const userId = req.user.id;
-
-        // Check if the blog exists
+        console.log(userId)
         const blog = await Blog.findById(blogId);
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
         }
 
-        // Create and save the comment
-        const newComment = new Comment({ blog: blogId, user: userId, content });
+        // Fetch username from user model
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        console.log(user,blog);
+        const newComment = new Comment({
+            blog: blogId,
+            user: userId,
+            username: user.username,
+            content
+        });
+
+        console.log(newComment)
+
         await newComment.save();
 
-        // Add the comment reference to the blog
         blog.comments.push(newComment._id);
         await blog.save();
 
-        res.status(201).json({ message: "Comment added successfully", comment: newComment });
+        res.status(201).json({
+            message: "Comment added successfully",
+            comment: newComment
+        });
     } catch (error) {
-        res.status(500).json({ message: "Error creating comment", error: error.message });
+        res.status(500).json({
+            message: "Error creating comment",
+            error: error.message
+        });
     }
 };
+
 
 /**
  * Delete a comment by its ID
@@ -80,10 +100,8 @@ export const getCommentsForBlog = async (req, res) => {
     try {
         const { blogId } = req.params;
 
-        // Find all comments associated with the given blogId
         const comments = await Comment.find({ blog: blogId })
-            .populate("user", "email") // Populate user details (optional)
-            .sort({ createdAt: -1 }); // Sort by newest first
+            .sort({ createdAt: -1 });
 
         res.status(200).json(comments);
     } catch (error) {

@@ -4,7 +4,7 @@ import axios from "axios";
 import Input from "../components/Input";
 import Button from "../components/Button";
 
-export default function signup() {
+export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,15 +13,11 @@ export default function signup() {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`http://localhost:5000/api/auth/signup/`, {
-        username,
-        email,
-        password,
-      },
-      {
-        withCredentials: true
-      }
-    );
+      const res = await axios.post(
+        `http://localhost:5000/api/auth/signup/`,
+        { username, email, password },
+        { withCredentials: true }
+      );
       localStorage.setItem("access", res.data.access);
       navigate("/");
     } catch (err) {
@@ -35,7 +31,9 @@ export default function signup() {
         onSubmit={handleRegister}
         className="card w-96 bg-base-100 shadow-xl p-8 space-y-4"
       >
-        <h2 className="text-2xl font-bold text-center">Register</h2>
+        <h2 className="text-2xl font-bold text-center text-base-content">
+          Register
+        </h2>
 
         <Input
           placeholder="Username"
@@ -56,10 +54,9 @@ export default function signup() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <Button text="signup" type="submit">
-        </Button>
+        <Button text="Signup" type="submit" className="w-full" />
 
-        <p className="text-sm text-center text-neutral-600">
+        <p className="text-sm text-center text-neutral-content">
           Already a user?{" "}
           <Link to="/login" className="link link-primary">
             Login

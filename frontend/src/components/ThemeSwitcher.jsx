@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ThemeSwitcher = () => {
-  const themes = ['wireframe', 'dark'];
+  const themes = ['wireframe', 'dark','luxury','cupcake'];
 
   const handleThemeChange = (e) => {
     document.documentElement.setAttribute('data-theme', e.target.value);

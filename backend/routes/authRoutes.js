@@ -10,6 +10,8 @@ import {
     refreshAccessToken,
     logout
 } from '../controllers/authController.js';
+import { getProfile } from "../controllers/authController.js";
+import { authenticateUser } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -38,6 +40,10 @@ router.post('/reset-password', resetPassword);
 router.get("/refresh-token", refreshAccessToken);
 
 router.post('/logout', logout);
+
+// For AuthContextProvider
+router.get("/profile", authenticateUser, getProfile);
+
 
 
 export default router;
