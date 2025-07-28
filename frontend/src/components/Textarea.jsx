@@ -1,32 +1,27 @@
 import React from 'react';
 
-const Textarea = ({
-  name,
-  label = '',
+const Input = ({
+  type = 'text',
   placeholder = '',
   value,
   onChange,
   className = '',
-  rows = 6,
+  label = '',
+  autoComplete = ''
 }) => {
   return (
     <div className="form-control w-full">
-      {label && (
-        <label htmlFor={name} className="label text-sm font-medium text-white">
-          {label}
-        </label>
-      )}
-      <textarea
-        id={name}
-        name={name}
+      {label && <label className="label">{label}</label>}
+      <input
+        type={type}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        rows={rows}
-        className={`textarea textarea-bordered w-full ${className}`}
+        className={`input input-bordered w-full ${className}`}
+        autoComplete={autoComplete}
       />
     </div>
   );
 };
 
-export default Textarea;
+export default Input;

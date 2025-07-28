@@ -3,11 +3,11 @@ import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
 
 // Get all blogs
-export const getBlogs = async (req, res) => {
+export const getAllBlogs = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        const blogs = await Blog.find({ author: userId })
+        const blogs = await Blog.find()
             .populate("author", "username")
             .sort({ createdAt: -1 });
 
@@ -92,4 +92,15 @@ export const deleteBlog = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Error deleting blog", error: error.message });
     }
+};
+
+
+export const getMyBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find({ author: req.user._id }).sort({ createdAt: -1 });
+    res.status(200).json(blogs);
+  } catch (err) {
+    console.error("Error in getMyBlogs:", err.message);
+    res.status(500).json({ error: "Failed to fetch your blogs" });
+  }
 };

@@ -19,7 +19,7 @@ export default function Login() {
         { withCredentials: true }
       );
       localStorage.setItem("accessToken", res.data.access);
-      navigate("/");
+      navigate('/');
     } catch (err) {
       alert("Login failed");
     }
@@ -29,7 +29,7 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       <form
         onSubmit={handleLogin}
-        className="card w-96 bg-base-100 shadow-xl p-8 space-y-4"
+        className="card w-full max-w-sm bg-base-100 shadow-xl p-6 sm:p-8 space-y-4"
       >
         <h2 className="text-2xl font-bold text-center text-base-content">
           Login

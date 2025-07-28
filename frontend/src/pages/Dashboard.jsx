@@ -23,7 +23,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="text-center mt-10 text-base-content text-lg">
+      <div className="text-center mt-10 text-lg">
         Loading...
       </div>
     );
@@ -31,14 +31,14 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-primary-content">
+      <h1 className="text-3xl font-bold mb-6">
         All Blogs
       </h1>
 
       {blogs.length > 0 ? (
         blogs.map((blog) => <BlogCard key={blog._id} blog={blog} />)
       ) : (
-        <p className="text-center text-neutral-content">No blogs available.</p>
+        <p className="text-center">No blogs available.</p>
       )}
     </div>
   );

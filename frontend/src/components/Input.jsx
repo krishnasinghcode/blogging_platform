@@ -11,7 +11,7 @@ const Input = ({
 }) => {
   return (
     <div className="form-control w-full">
-      {label && <label className="label text-sm font-medium text-white">{label}</label>}
+      {label && <label className="label">{label}</label>}
       <input
         type={type}
         placeholder={placeholder}

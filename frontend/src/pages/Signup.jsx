@@ -29,7 +29,7 @@ export default function Signup() {
     <div className="min-h-screen flex items-center justify-center bg-base-200">
       <form
         onSubmit={handleRegister}
-        className="card w-96 bg-base-100 shadow-xl p-8 space-y-4"
+        className="card w-full max-w-sm bg-base-100 shadow-xl p-6 sm:p-8 space-y-4"
       >
         <h2 className="text-2xl font-bold text-center text-base-content">
           Register
@@ -66,3 +66,4 @@ export default function Signup() {
     </div>
   );
 }
+

@@ -3,37 +3,29 @@ import { useNavigate } from "react-router-dom";
 import InputField from "../components/Input";
 import Button from "../components/Button";
 import { createBlog } from "../api/blogAPI";
-import Textarea from '../components/Textarea';
-
+import Textarea from "../components/Textarea";
 
 const CreateBlog = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const newBlog = { title, content };
 
     try {
       await createBlog(newBlog);
-      console.log("Blog created successfully");
       navigate("/");
     } catch (error) {
       console.error("Error creating blog:", error);
     }
   };
 
-  const handleBackButton = () => {
-    navigate("/");
-  };
-
   return (
     <div className="min-h-screen bg-base-100 px-4 py-8">
       <div className="max-w-3xl mx-auto bg-base-200 p-8 rounded-xl shadow-xl border border-base-300">
-        <h2 className="text-3xl font-bold mb-8 text-center text-primary">Create a New Blog</h2>
+        <h2 className="text-3xl font-bold mb-8 text-center">Create a New Blog</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <InputField
             type="text"
@@ -51,7 +43,6 @@ const CreateBlog = () => {
             onChange={(e) => setContent(e.target.value)}
             rows={8}
           />
-
           <Button
             type="submit"
             text="Create Blog"

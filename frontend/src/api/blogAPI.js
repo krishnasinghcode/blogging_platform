@@ -22,18 +22,7 @@ export const fetchAllBlogs = async () => {
 
 export const createBlog = async (newBlog) => {
   try {
-    const token = localStorage.getItem("access");
-    const response = await axios.post(
-      "http://localhost:5000/api/blogs/create",
-      newBlog,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      }
-    );
-
+    const response = await API.post("/blogs/create", newBlog);
     console.log("Blog created successfully:", response.data);
     return response.data;
   } catch (error) {
@@ -53,4 +42,23 @@ export const fetchBlogById = async (_id) => {
   });
 
   return response.data;
+};
+
+
+export const fetchUserBlogs = async () => {
+  try {
+    const token = localStorage.getItem("access");
+
+    const res = await API.get("/blogs/myblogs", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    });
+
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching user blogs:", err.response?.data || err);
+    return [];
+  }
 };

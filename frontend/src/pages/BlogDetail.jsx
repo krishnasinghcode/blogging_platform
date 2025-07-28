@@ -65,22 +65,22 @@ const BlogDetails = () => {
   };
 
   if (loadingBlog)
-    return <div className="text-center mt-10 text-base-content">Loading blog...</div>;
+    return <div className="text-center mt-10">Loading blog...</div>;
 
   if (!blog)
     return <div className="text-center mt-10 text-error">Blog not found.</div>;
-  console.log(comments)
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       {/* Blog Section */}
       <div className="mb-8 bg-base-200 p-6 rounded-lg shadow">
-        <h1 className="text-4xl font-bold mb-4 text-base-content">{blog.title}</h1>
-        <p className="text-sm text-neutral-content">
+        <h1 className="text-4xl font-bold mb-4">{blog.title}</h1>
+        <p className="text-sm">
           By <span className="font-semibold">{blog.author?.username || 'Unknown Author'}</span> •{' '}
           {new Date(blog.updatedAt).toLocaleDateString()}
         </p>
         <div className="py-5">
-          <p className="whitespace-pre-line text-base-content">{blog.content}</p>
+          <p className="whitespace-pre-line">{blog.content}</p>
         </div>
       </div>
 
@@ -92,7 +92,6 @@ const BlogDetails = () => {
             placeholder="Write your comment..."
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            className="text-base-content"
           />
           <Button
             text="Post Comment"
@@ -102,33 +101,31 @@ const BlogDetails = () => {
           />
         </div>
       ) : (
-        <p className="text-neutral-content">Login to post a comment.</p>
+        <p>Login to post a comment.</p>
       )}
 
       {/* Comments */}
       <div className="mt-10">
-        <h2 className="text-2xl font-bold text-base-content mb-6 border-b border-base-300 pb-2">
+        <h2 className="text-2xl font-bold mb-6 border-b border-base-300 pb-2">
           Comments
         </h2>
 
         {loadingComments ? (
-          <div className="text-center text-neutral-content py-4">Loading comments...</div>
+          <div className="text-center py-4">Loading comments...</div>
         ) : comments.length > 0 ? (
           <div className="space-y-4">
             {comments.map((c) => (
               <div
                 key={c._id}
-                className="bg-base-200 text-base-content p-4 rounded-xl shadow-md"
+                className="bg-base-200 p-4 rounded-xl shadow-md"
               >
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-semibold text-sm">{c.username || 'Unknown'}</span>
-                  <span className="text-xs text-neutral-content">
+                  <span className="text-xs opacity-70">
                     {new Date(c.createdAt).toLocaleString()}
                   </span>
                 </div>
-                <p className="text-sm leading-relaxed text-base-content mb-3">
-                  {c.content}
-                </p>
+                <p className="text-sm leading-relaxed mb-3">{c.content}</p>
                 {user?._id === c.user && (
                   <button
                     onClick={() => handleDeleteComment(c._id)}
@@ -141,10 +138,9 @@ const BlogDetails = () => {
             ))}
           </div>
         ) : (
-          <p className="text-neutral-content py-4">No comments yet.</p>
+          <p className="py-4">No comments yet.</p>
         )}
       </div>
-
     </div>
   );
 };
