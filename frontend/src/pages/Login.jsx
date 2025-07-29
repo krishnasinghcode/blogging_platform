@@ -20,6 +20,7 @@ export default function Login() {
       );
       localStorage.setItem("accessToken", res.data.access);
       navigate('/');
+      window.location.reload();
     } catch (err) {
       alert("Login failed");
     }
